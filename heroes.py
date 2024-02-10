@@ -1,3 +1,8 @@
+
+figures = ['♚','♝','♞','♛','♜','♟','♔','♕','♘','♗','♖']
+
+
+
 class Thather():
     """
         Главный класс
@@ -15,7 +20,8 @@ class Thather():
     def delete(self,board):
         """Заменяет предмет на ' ' """
         board[self.x][self.y] = ' '
-class Peshka(Thather):
+class Pawn(Thather):
+    global figures
     def __init__(self,look,black,x,y,first = True):
         """look -> str, black -> bool, x,y -> int"""
         super().__init__(look,black,x,y)
@@ -30,7 +36,11 @@ class Peshka(Thather):
             for pl in self.places2:
                 if pl != -1:
                     self.places1.append(pl)
-        return self.places1
+        self.places = []
+        for pl in self.places1:
+            if pl[0] or pl[1] >= 0:
+                self.places.append(pl)
+        return self.places
     def can_go(self,board):
         """Возвращает передние координаты
                         если нет фигур
@@ -74,6 +84,69 @@ class Peshka(Thather):
         else:
             return [self.ret]
         return -1
+    def reborn(self,board):
+        pass
+class Rook(Thather):
+    def __init__(self,look,black,x,y):
+        """look -> str, black -> bool, x,y -> int"""
+        super().__init__(look,black,x,y)
+    def move(self,board):
+        """ проверяет пряпые линии у ладьи
+                xxxxxxxxxx|xxxxxxxxxx
+                xxxxxxxxxx|xxxxxxxxxx
+                ----------O----------
+                xxxxxxxxxx|xxxxxxxxxx
+                xxxxxxxxxx|xxxxxxxxxx
+        """
+        self.for_ret = []
 
+        self.allminus = True
+        self.allplus = True
+
+        self.xpx = self.x
+        self.ypy = self.y
+
+        for x in [-1,-2,-3,-4,-5,-6,-7,1,2,3,4,5,6,7]:
+            self.xpx = self.x + x
+            if self.xpx > -1 and self.xpx < 8:
+                if board[self.y][self.xpx] != ' ':
+                    if x < 0:
+                        if self.allminus == True:
+                            self.for_ret.append([self.xpx,self.y])
+                        self.allminus = False
+                    elif x > 0:
+                        if self.allplus == True:
+                            self.for_ret.append([self.xpx,self.y])
+                        self.allplus = False
+                    
+                else:
+                    if x < 0 and self.allminus == True:
+                        self.for_ret.append([self.xpx,self.y])
+                    elif x > 0 and self.allplus == True:
+                        self.for_ret.append([self.xpx,self.y])
+
+        self.allminus = True
+        self.allplus = True
+
+        for y in [-1,-2,-3,-4,-5,-6,-7,1,2,3,4,5,6,7]:
+            self.ypy = self.y - y
+            if self.ypy > -1 and self.ypy < 8:
+                if board[self.ypy][self.x] != ' ':
+                    
+                    if y < 0:
+                        if self.allminus == True:
+                            self.for_ret.append([self.x,self.ypy])
+                        self.allminus = False
+                    elif y > 0:
+                        if self.allplus == True:
+                            self.for_ret.append([self.x,self.ypy])
+                        self.allplus = False
+                    
+                else:
+                    if y < 0 and self.allminus == True:
+                        self.for_ret.append([self.x,self.ypy])
+                    elif y > 0 and self.allplus == True:
+                        self.for_ret.append([self.x,self.ypy])
+        return self.for_ret
             
     
